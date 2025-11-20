@@ -1,0 +1,381 @@
+home_team,away_team,home_goals,away_goals,result,season
+Hull City,Leicester City,2.0,1.0,H,2016-2017
+Burnley,Swansea City,0.0,1.0,A,2016-2017
+Crystal Palace,West Bromwich Albion,0.0,1.0,A,2016-2017
+Everton,Tottenham Hotspur,1.0,1.0,D,2016-2017
+Middlesbrough,Stoke City,1.0,1.0,D,2016-2017
+Southampton,Watford,1.0,1.0,D,2016-2017
+Manchester City,Sunderland,2.0,1.0,H,2016-2017
+AFC Bournemouth,Manchester United,1.0,3.0,A,2016-2017
+Arsenal,Liverpool,3.0,4.0,A,2016-2017
+Chelsea,West Ham United,2.0,1.0,H,2016-2017
+Manchester United,Southampton,2.0,0.0,H,2016-2017
+Stoke City,Manchester City,1.0,4.0,A,2016-2017
+Burnley,Liverpool,2.0,0.0,H,2016-2017
+Swansea City,Hull City,0.0,2.0,A,2016-2017
+Tottenham Hotspur,Crystal Palace,1.0,0.0,H,2016-2017
+Watford,Chelsea,1.0,2.0,A,2016-2017
+West Bromwich Albion,Everton,1.0,2.0,A,2016-2017
+Leicester City,Arsenal,0.0,0.0,D,2016-2017
+Sunderland,Middlesbrough,1.0,2.0,A,2016-2017
+West Ham United,AFC Bournemouth,1.0,0.0,H,2016-2017
+Tottenham Hotspur,Liverpool,1.0,1.0,D,2016-2017
+Chelsea,Burnley,3.0,0.0,H,2016-2017
+Crystal Palace,AFC Bournemouth,1.0,1.0,D,2016-2017
+Everton,Stoke City,1.0,0.0,H,2016-2017
+Leicester City,Swansea City,2.0,1.0,H,2016-2017
+Southampton,Sunderland,1.0,1.0,D,2016-2017
+Watford,Arsenal,1.0,3.0,A,2016-2017
+Hull City,Manchester United,0.0,1.0,A,2016-2017
+West Bromwich Albion,Middlesbrough,0.0,0.0,D,2016-2017
+Manchester City,West Ham United,3.0,1.0,H,2016-2017
+Manchester United,Manchester City,1.0,2.0,A,2016-2017
+Arsenal,Southampton,2.0,1.0,H,2016-2017
+AFC Bournemouth,West Bromwich Albion,1.0,0.0,H,2016-2017
+Burnley,Hull City,1.0,1.0,D,2016-2017
+Middlesbrough,Crystal Palace,1.0,2.0,A,2016-2017
+Stoke City,Tottenham Hotspur,0.0,4.0,A,2016-2017
+West Ham United,Watford,2.0,4.0,A,2016-2017
+Liverpool,Leicester City,4.0,1.0,H,2016-2017
+Swansea City,Chelsea,2.0,2.0,D,2016-2017
+Sunderland,Everton,0.0,3.0,A,2016-2017
+Chelsea,Liverpool,1.0,2.0,A,2016-2017
+Hull City,Arsenal,1.0,4.0,A,2016-2017
+Leicester City,Burnley,3.0,0.0,H,2016-2017
+Manchester City,AFC Bournemouth,4.0,0.0,H,2016-2017
+West Bromwich Albion,West Ham United,4.0,2.0,H,2016-2017
+Everton,Middlesbrough,3.0,1.0,H,2016-2017
+Watford,Manchester United,3.0,1.0,H,2016-2017
+Crystal Palace,Stoke City,4.0,1.0,H,2016-2017
+Southampton,Swansea City,1.0,0.0,H,2016-2017
+Tottenham Hotspur,Sunderland,1.0,0.0,H,2016-2017
+Manchester United,Leicester City,4.0,1.0,H,2016-2017
+AFC Bournemouth,Everton,1.0,0.0,H,2016-2017
+Liverpool,Hull City,5.0,1.0,H,2016-2017
+Middlesbrough,Tottenham Hotspur,1.0,2.0,A,2016-2017
+Stoke City,West Bromwich Albion,1.0,1.0,D,2016-2017
+Sunderland,Crystal Palace,2.0,3.0,A,2016-2017
+Swansea City,Manchester City,1.0,3.0,A,2016-2017
+Arsenal,Chelsea,3.0,0.0,H,2016-2017
+West Ham United,Southampton,0.0,3.0,A,2016-2017
+Burnley,Watford,2.0,0.0,H,2016-2017
+Everton,Crystal Palace,1.0,1.0,D,2016-2017
+Swansea City,Liverpool,1.0,2.0,A,2016-2017
+Hull City,Chelsea,0.0,2.0,A,2016-2017
+Sunderland,West Bromwich Albion,1.0,1.0,D,2016-2017
+Watford,AFC Bournemouth,2.0,2.0,D,2016-2017
+West Ham United,Middlesbrough,1.0,1.0,D,2016-2017
+Manchester United,Stoke City,1.0,1.0,D,2016-2017
+Leicester City,Southampton,0.0,0.0,D,2016-2017
+Tottenham Hotspur,Manchester City,2.0,0.0,H,2016-2017
+Burnley,Arsenal,0.0,1.0,A,2016-2017
+Chelsea,Leicester City,3.0,0.0,H,2016-2017
+Arsenal,Swansea City,3.0,2.0,H,2016-2017
+AFC Bournemouth,Hull City,6.0,1.0,H,2016-2017
+Manchester City,Everton,1.0,1.0,D,2016-2017
+Stoke City,Sunderland,2.0,0.0,H,2016-2017
+West Bromwich Albion,Tottenham Hotspur,1.0,1.0,D,2016-2017
+Crystal Palace,West Ham United,0.0,1.0,A,2016-2017
+Middlesbrough,Watford,0.0,1.0,A,2016-2017
+Southampton,Burnley,3.0,1.0,H,2016-2017
+Liverpool,Manchester United,0.0,0.0,D,2016-2017
+AFC Bournemouth,Tottenham Hotspur,0.0,0.0,D,2016-2017
+Arsenal,Middlesbrough,0.0,0.0,D,2016-2017
+Burnley,Everton,2.0,1.0,H,2016-2017
+Hull City,Stoke City,0.0,2.0,A,2016-2017
+Leicester City,Crystal Palace,3.0,1.0,H,2016-2017
+Swansea City,Watford,0.0,0.0,D,2016-2017
+West Ham United,Sunderland,1.0,0.0,H,2016-2017
+Liverpool,West Bromwich Albion,2.0,1.0,H,2016-2017
+Manchester City,Southampton,1.0,1.0,D,2016-2017
+Chelsea,Manchester United,4.0,0.0,H,2016-2017
+Sunderland,Arsenal,1.0,4.0,A,2016-2017
+Manchester United,Burnley,0.0,0.0,D,2016-2017
+Middlesbrough,AFC Bournemouth,2.0,0.0,H,2016-2017
+Tottenham Hotspur,Leicester City,1.0,1.0,D,2016-2017
+Watford,Hull City,1.0,0.0,H,2016-2017
+West Bromwich Albion,Manchester City,0.0,4.0,A,2016-2017
+Crystal Palace,Liverpool,2.0,4.0,A,2016-2017
+Everton,West Ham United,2.0,0.0,H,2016-2017
+Southampton,Chelsea,0.0,2.0,A,2016-2017
+Stoke City,Swansea City,3.0,1.0,H,2016-2017
+AFC Bournemouth,Sunderland,1.0,2.0,A,2016-2017
+Burnley,Crystal Palace,3.0,2.0,H,2016-2017
+Manchester City,Middlesbrough,1.0,1.0,D,2016-2017
+West Ham United,Stoke City,1.0,1.0,D,2016-2017
+Chelsea,Everton,5.0,0.0,H,2016-2017
+Arsenal,Tottenham Hotspur,1.0,1.0,D,2016-2017
+Hull City,Southampton,2.0,1.0,H,2016-2017
+Liverpool,Watford,6.0,1.0,H,2016-2017
+Swansea City,Manchester United,1.0,3.0,A,2016-2017
+Leicester City,West Bromwich Albion,1.0,2.0,A,2016-2017
+Manchester United,Arsenal,1.0,1.0,D,2016-2017
+Crystal Palace,Manchester City,1.0,2.0,A,2016-2017
+Everton,Swansea City,1.0,1.0,D,2016-2017
+Southampton,Liverpool,0.0,0.0,D,2016-2017
+Stoke City,AFC Bournemouth,0.0,1.0,A,2016-2017
+Sunderland,Hull City,3.0,0.0,H,2016-2017
+Watford,Leicester City,2.0,1.0,H,2016-2017
+Tottenham Hotspur,West Ham United,3.0,2.0,H,2016-2017
+Middlesbrough,Chelsea,0.0,1.0,A,2016-2017
+West Bromwich Albion,Burnley,4.0,0.0,H,2016-2017
+Burnley,Manchester City,1.0,2.0,A,2016-2017
+Hull City,West Bromwich Albion,1.0,1.0,D,2016-2017
+Leicester City,Middlesbrough,2.0,2.0,D,2016-2017
+Liverpool,Sunderland,2.0,0.0,H,2016-2017
+Swansea City,Crystal Palace,5.0,4.0,H,2016-2017
+Chelsea,Tottenham Hotspur,2.0,1.0,H,2016-2017
+Watford,Stoke City,0.0,1.0,A,2016-2017
+Arsenal,AFC Bournemouth,3.0,1.0,H,2016-2017
+Manchester United,West Ham United,1.0,1.0,D,2016-2017
+Southampton,Everton,1.0,0.0,H,2016-2017
+Manchester City,Chelsea,1.0,3.0,A,2016-2017
+Crystal Palace,Southampton,3.0,0.0,H,2016-2017
+Stoke City,Burnley,2.0,0.0,H,2016-2017
+Sunderland,Leicester City,2.0,1.0,H,2016-2017
+Tottenham Hotspur,Swansea City,5.0,0.0,H,2016-2017
+West Bromwich Albion,Watford,3.0,1.0,H,2016-2017
+West Ham United,Arsenal,1.0,5.0,A,2016-2017
+AFC Bournemouth,Liverpool,4.0,3.0,H,2016-2017
+Everton,Manchester United,1.0,1.0,D,2016-2017
+Middlesbrough,Hull City,1.0,0.0,H,2016-2017
+Watford,Everton,3.0,2.0,H,2016-2017
+Arsenal,Stoke City,3.0,1.0,H,2016-2017
+Burnley,AFC Bournemouth,3.0,2.0,H,2016-2017
+Hull City,Crystal Palace,3.0,3.0,D,2016-2017
+Swansea City,Sunderland,3.0,0.0,H,2016-2017
+Leicester City,Manchester City,4.0,2.0,H,2016-2017
+Chelsea,West Bromwich Albion,1.0,0.0,H,2016-2017
+Manchester United,Tottenham Hotspur,1.0,0.0,H,2016-2017
+Southampton,Middlesbrough,1.0,0.0,H,2016-2017
+Liverpool,West Ham United,2.0,2.0,D,2016-2017
+AFC Bournemouth,Leicester City,1.0,0.0,H,2016-2017
+Everton,Arsenal,2.0,1.0,H,2016-2017
+Middlesbrough,Liverpool,0.0,3.0,A,2016-2017
+Sunderland,Chelsea,0.0,1.0,A,2016-2017
+West Ham United,Burnley,1.0,0.0,H,2016-2017
+Crystal Palace,Manchester United,1.0,2.0,A,2016-2017
+Manchester City,Watford,2.0,0.0,H,2016-2017
+Stoke City,Southampton,0.0,0.0,D,2016-2017
+Tottenham Hotspur,Hull City,3.0,0.0,H,2016-2017
+West Bromwich Albion,Swansea City,3.0,1.0,H,2016-2017
+Crystal Palace,Chelsea,0.0,1.0,A,2016-2017
+Middlesbrough,Swansea City,3.0,0.0,H,2016-2017
+Stoke City,Leicester City,2.0,2.0,D,2016-2017
+Sunderland,Watford,1.0,0.0,H,2016-2017
+West Ham United,Hull City,1.0,0.0,H,2016-2017
+West Bromwich Albion,Manchester United,0.0,2.0,A,2016-2017
+AFC Bournemouth,Southampton,1.0,3.0,A,2016-2017
+Manchester City,Arsenal,2.0,1.0,H,2016-2017
+Tottenham Hotspur,Burnley,2.0,1.0,H,2016-2017
+Everton,Liverpool,0.0,1.0,A,2016-2017
+Watford,Crystal Palace,1.0,1.0,D,2016-2017
+Arsenal,West Bromwich Albion,1.0,0.0,H,2016-2017
+Burnley,Middlesbrough,1.0,0.0,H,2016-2017
+Chelsea,AFC Bournemouth,3.0,0.0,H,2016-2017
+Leicester City,Everton,0.0,2.0,A,2016-2017
+Manchester United,Sunderland,3.0,1.0,H,2016-2017
+Swansea City,West Ham United,1.0,4.0,A,2016-2017
+Hull City,Manchester City,0.0,3.0,A,2016-2017
+Liverpool,Stoke City,4.0,1.0,H,2016-2017
+Southampton,Tottenham Hotspur,1.0,4.0,A,2016-2017
+Hull City,Everton,2.0,2.0,D,2016-2017
+Burnley,Sunderland,4.0,1.0,H,2016-2017
+Chelsea,Stoke City,4.0,2.0,H,2016-2017
+Leicester City,West Ham United,1.0,0.0,H,2016-2017
+Manchester United,Middlesbrough,2.0,1.0,H,2016-2017
+Southampton,West Bromwich Albion,1.0,2.0,A,2016-2017
+Swansea City,AFC Bournemouth,0.0,3.0,A,2016-2017
+Liverpool,Manchester City,1.0,0.0,H,2016-2017
+Watford,Tottenham Hotspur,1.0,4.0,A,2016-2017
+Arsenal,Crystal Palace,2.0,0.0,H,2016-2017
+Middlesbrough,Leicester City,0.0,0.0,D,2016-2017
+Everton,Southampton,3.0,0.0,H,2016-2017
+Manchester City,Burnley,2.0,1.0,H,2016-2017
+Sunderland,Liverpool,2.0,2.0,D,2016-2017
+West Bromwich Albion,Hull City,3.0,1.0,H,2016-2017
+West Ham United,Manchester United,0.0,2.0,A,2016-2017
+AFC Bournemouth,Arsenal,3.0,3.0,D,2016-2017
+Crystal Palace,Swansea City,1.0,2.0,A,2016-2017
+Stoke City,Watford,2.0,0.0,H,2016-2017
+Tottenham Hotspur,Chelsea,2.0,0.0,H,2016-2017
+Tottenham Hotspur,West Bromwich Albion,4.0,0.0,H,2016-2017
+Burnley,Southampton,1.0,0.0,H,2016-2017
+Hull City,AFC Bournemouth,3.0,1.0,H,2016-2017
+Sunderland,Stoke City,1.0,3.0,A,2016-2017
+Swansea City,Arsenal,0.0,4.0,A,2016-2017
+Watford,Middlesbrough,0.0,0.0,D,2016-2017
+West Ham United,Crystal Palace,3.0,0.0,H,2016-2017
+Leicester City,Chelsea,0.0,3.0,A,2016-2017
+Everton,Manchester City,4.0,0.0,H,2016-2017
+Manchester United,Liverpool,1.0,1.0,D,2016-2017
+Liverpool,Swansea City,2.0,3.0,A,2016-2017
+AFC Bournemouth,Watford,2.0,2.0,D,2016-2017
+Crystal Palace,Everton,0.0,1.0,A,2016-2017
+Middlesbrough,West Ham United,1.0,3.0,A,2016-2017
+Stoke City,Manchester United,1.0,1.0,D,2016-2017
+West Bromwich Albion,Sunderland,2.0,0.0,H,2016-2017
+Manchester City,Tottenham Hotspur,2.0,2.0,D,2016-2017
+Southampton,Leicester City,3.0,0.0,H,2016-2017
+Arsenal,Burnley,2.0,1.0,H,2016-2017
+Chelsea,Hull City,2.0,0.0,H,2016-2017
+Arsenal,Watford,1.0,2.0,A,2016-2017
+AFC Bournemouth,Crystal Palace,0.0,2.0,A,2016-2017
+Burnley,Leicester City,1.0,0.0,H,2016-2017
+Middlesbrough,West Bromwich Albion,1.0,1.0,D,2016-2017
+Sunderland,Tottenham Hotspur,0.0,0.0,D,2016-2017
+Swansea City,Southampton,2.0,1.0,H,2016-2017
+Liverpool,Chelsea,1.0,1.0,D,2016-2017
+West Ham United,Manchester City,0.0,4.0,A,2016-2017
+Manchester United,Hull City,0.0,0.0,D,2016-2017
+Stoke City,Everton,1.0,1.0,D,2016-2017
+Chelsea,Arsenal,3.0,1.0,H,2016-2017
+Crystal Palace,Sunderland,0.0,4.0,A,2016-2017
+Everton,AFC Bournemouth,6.0,3.0,H,2016-2017
+Hull City,Liverpool,2.0,0.0,H,2016-2017
+Southampton,West Ham United,1.0,3.0,A,2016-2017
+Watford,Burnley,2.0,1.0,H,2016-2017
+West Bromwich Albion,Stoke City,1.0,0.0,H,2016-2017
+Tottenham Hotspur,Middlesbrough,1.0,0.0,H,2016-2017
+Manchester City,Swansea City,2.0,1.0,H,2016-2017
+Leicester City,Manchester United,0.0,3.0,A,2016-2017
+Arsenal,Hull City,2.0,0.0,H,2016-2017
+Manchester United,Watford,2.0,0.0,H,2016-2017
+Middlesbrough,Everton,0.0,0.0,D,2016-2017
+Stoke City,Crystal Palace,1.0,0.0,H,2016-2017
+Sunderland,Southampton,0.0,4.0,A,2016-2017
+West Ham United,West Bromwich Albion,2.0,2.0,D,2016-2017
+Liverpool,Tottenham Hotspur,2.0,0.0,H,2016-2017
+Burnley,Chelsea,1.0,1.0,D,2016-2017
+Swansea City,Leicester City,2.0,0.0,H,2016-2017
+AFC Bournemouth,Manchester City,0.0,2.0,A,2016-2017
+Chelsea,Swansea City,3.0,1.0,H,2016-2017
+Crystal Palace,Middlesbrough,1.0,0.0,H,2016-2017
+Everton,Sunderland,2.0,0.0,H,2016-2017
+Hull City,Burnley,1.0,1.0,D,2016-2017
+West Bromwich Albion,AFC Bournemouth,2.0,1.0,H,2016-2017
+Watford,West Ham United,1.0,1.0,D,2016-2017
+Tottenham Hotspur,Stoke City,4.0,0.0,H,2016-2017
+Leicester City,Liverpool,3.0,1.0,H,2016-2017
+Manchester United,AFC Bournemouth,1.0,1.0,D,2016-2017
+Leicester City,Hull City,3.0,1.0,H,2016-2017
+Stoke City,Middlesbrough,2.0,0.0,H,2016-2017
+Swansea City,Burnley,3.0,2.0,H,2016-2017
+Watford,Southampton,3.0,4.0,A,2016-2017
+West Bromwich Albion,Crystal Palace,0.0,2.0,A,2016-2017
+Liverpool,Arsenal,3.0,1.0,H,2016-2017
+Tottenham Hotspur,Everton,3.0,2.0,H,2016-2017
+Sunderland,Manchester City,0.0,2.0,A,2016-2017
+West Ham United,Chelsea,1.0,2.0,A,2016-2017
+Manchester City,Stoke City,0.0,0.0,D,2016-2017
+AFC Bournemouth,West Ham United,3.0,2.0,H,2016-2017
+Everton,West Bromwich Albion,3.0,0.0,H,2016-2017
+Hull City,Swansea City,2.0,1.0,H,2016-2017
+Liverpool,Burnley,2.0,1.0,H,2016-2017
+West Bromwich Albion,Arsenal,3.0,1.0,H,2016-2017
+Crystal Palace,Watford,1.0,0.0,H,2016-2017
+Everton,Hull City,4.0,0.0,H,2016-2017
+Stoke City,Chelsea,1.0,2.0,A,2016-2017
+Sunderland,Burnley,0.0,0.0,D,2016-2017
+West Ham United,Leicester City,2.0,3.0,A,2016-2017
+AFC Bournemouth,Swansea City,2.0,0.0,H,2016-2017
+Middlesbrough,Manchester United,1.0,3.0,A,2016-2017
+Tottenham Hotspur,Southampton,2.0,1.0,H,2016-2017
+Manchester City,Liverpool,1.0,1.0,D,2016-2017
+Liverpool,Everton,3.0,1.0,H,2016-2017
+Burnley,Tottenham Hotspur,0.0,2.0,A,2016-2017
+Chelsea,Crystal Palace,1.0,2.0,A,2016-2017
+Hull City,West Ham United,2.0,1.0,H,2016-2017
+Leicester City,Stoke City,2.0,0.0,H,2016-2017
+Manchester United,West Bromwich Albion,0.0,0.0,D,2016-2017
+Watford,Sunderland,1.0,0.0,H,2016-2017
+Southampton,AFC Bournemouth,0.0,0.0,D,2016-2017
+Swansea City,Middlesbrough,0.0,0.0,D,2016-2017
+Arsenal,Manchester City,2.0,2.0,D,2016-2017
+Burnley,Stoke City,1.0,0.0,H,2016-2017
+Leicester City,Sunderland,2.0,0.0,H,2016-2017
+Watford,West Bromwich Albion,2.0,0.0,H,2016-2017
+Manchester United,Everton,1.0,1.0,D,2016-2017
+Arsenal,West Ham United,3.0,0.0,H,2016-2017
+Hull City,Middlesbrough,4.0,2.0,H,2016-2017
+Southampton,Crystal Palace,3.0,1.0,H,2016-2017
+Swansea City,Tottenham Hotspur,1.0,3.0,A,2016-2017
+Chelsea,Manchester City,2.0,1.0,H,2016-2017
+Liverpool,AFC Bournemouth,2.0,2.0,D,2016-2017
+Tottenham Hotspur,Watford,4.0,0.0,H,2016-2017
+Manchester City,Hull City,3.0,1.0,H,2016-2017
+Middlesbrough,Burnley,0.0,0.0,D,2016-2017
+Stoke City,Liverpool,1.0,2.0,A,2016-2017
+West Bromwich Albion,Southampton,0.0,1.0,A,2016-2017
+West Ham United,Swansea City,1.0,0.0,H,2016-2017
+AFC Bournemouth,Chelsea,1.0,3.0,A,2016-2017
+Sunderland,Manchester United,0.0,3.0,A,2016-2017
+Everton,Leicester City,4.0,2.0,H,2016-2017
+Crystal Palace,Arsenal,3.0,0.0,H,2016-2017
+Tottenham Hotspur,AFC Bournemouth,4.0,0.0,H,2016-2017
+Crystal Palace,Leicester City,2.0,2.0,D,2016-2017
+Everton,Burnley,3.0,1.0,H,2016-2017
+Stoke City,Hull City,3.0,1.0,H,2016-2017
+Sunderland,West Ham United,2.0,2.0,D,2016-2017
+Watford,Swansea City,1.0,0.0,H,2016-2017
+Southampton,Manchester City,0.0,3.0,A,2016-2017
+West Bromwich Albion,Liverpool,0.0,1.0,A,2016-2017
+Manchester United,Chelsea,2.0,0.0,H,2016-2017
+Middlesbrough,Arsenal,1.0,2.0,A,2016-2017
+AFC Bournemouth,Middlesbrough,4.0,0.0,H,2016-2017
+Hull City,Watford,2.0,0.0,H,2016-2017
+Swansea City,Stoke City,2.0,0.0,H,2016-2017
+West Ham United,Everton,0.0,0.0,D,2016-2017
+Burnley,Manchester United,0.0,2.0,A,2016-2017
+Liverpool,Crystal Palace,1.0,2.0,A,2016-2017
+Chelsea,Southampton,4.0,2.0,H,2016-2017
+Arsenal,Leicester City,1.0,0.0,H,2016-2017
+Middlesbrough,Sunderland,1.0,0.0,H,2016-2017
+Crystal Palace,Tottenham Hotspur,0.0,1.0,A,2016-2017
+Manchester City,Manchester United,0.0,0.0,D,2016-2017
+Southampton,Hull City,0.0,0.0,D,2016-2017
+Stoke City,West Ham United,0.0,0.0,D,2016-2017
+Sunderland,AFC Bournemouth,0.0,1.0,A,2016-2017
+West Bromwich Albion,Leicester City,0.0,1.0,A,2016-2017
+Crystal Palace,Burnley,0.0,2.0,A,2016-2017
+Manchester United,Swansea City,1.0,1.0,D,2016-2017
+Everton,Chelsea,0.0,3.0,A,2016-2017
+Middlesbrough,Manchester City,2.0,2.0,D,2016-2017
+Tottenham Hotspur,Arsenal,2.0,0.0,H,2016-2017
+Watford,Liverpool,0.0,1.0,A,2016-2017
+West Ham United,Tottenham Hotspur,1.0,0.0,H,2016-2017
+Manchester City,Crystal Palace,5.0,0.0,H,2016-2017
+AFC Bournemouth,Stoke City,2.0,2.0,D,2016-2017
+Burnley,West Bromwich Albion,2.0,2.0,D,2016-2017
+Hull City,Sunderland,0.0,2.0,A,2016-2017
+Leicester City,Watford,3.0,0.0,H,2016-2017
+Swansea City,Everton,1.0,0.0,H,2016-2017
+Liverpool,Southampton,0.0,0.0,D,2016-2017
+Arsenal,Manchester United,2.0,0.0,H,2016-2017
+Chelsea,Middlesbrough,3.0,0.0,H,2016-2017
+Southampton,Arsenal,0.0,2.0,A,2016-2017
+Everton,Watford,1.0,0.0,H,2016-2017
+West Bromwich Albion,Chelsea,0.0,1.0,A,2016-2017
+Manchester City,Leicester City,2.0,1.0,H,2016-2017
+AFC Bournemouth,Burnley,2.0,1.0,H,2016-2017
+Middlesbrough,Southampton,1.0,2.0,A,2016-2017
+Sunderland,Swansea City,0.0,2.0,A,2016-2017
+Stoke City,Arsenal,1.0,4.0,A,2016-2017
+Crystal Palace,Hull City,4.0,0.0,H,2016-2017
+West Ham United,Liverpool,0.0,4.0,A,2016-2017
+Tottenham Hotspur,Manchester United,2.0,1.0,H,2016-2017
+Chelsea,Watford,4.0,3.0,H,2016-2017
+Arsenal,Sunderland,2.0,0.0,H,2016-2017
+Manchester City,West Bromwich Albion,3.0,1.0,H,2016-2017
+Southampton,Manchester United,0.0,0.0,D,2016-2017
+Leicester City,Tottenham Hotspur,1.0,6.0,A,2016-2017
+Arsenal,Everton,3.0,1.0,H,2016-2017
+Burnley,West Ham United,1.0,2.0,A,2016-2017
+Chelsea,Sunderland,5.0,1.0,H,2016-2017
+Hull City,Tottenham Hotspur,1.0,7.0,A,2016-2017
+Leicester City,AFC Bournemouth,1.0,1.0,D,2016-2017
+Liverpool,Middlesbrough,3.0,0.0,H,2016-2017
+Manchester United,Crystal Palace,2.0,0.0,H,2016-2017
+Southampton,Stoke City,0.0,1.0,A,2016-2017
+Swansea City,West Bromwich Albion,2.0,1.0,H,2016-2017
+Watford,Manchester City,0.0,5.0,A,2016-2017
