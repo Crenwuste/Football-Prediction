@@ -1,0 +1,21 @@
+team,expected_points,median_points,std_points,min_points,max_points,prob_champion_percent,prob_top4_percent,prob_relegation_percent
+Tottenham Hotspur,71.9,72,7.7,48,92,0.1,34.2,21.4
+Manchester City,71.1,71,7.4,45,95,0.2,33.7,22.5
+Liverpool,70.6,71,7.8,45,96,0.1,32.2,22.2
+Arsenal,67.1,67,7.7,44,89,0.3,34.3,22.2
+Chelsea,65.6,65,7.5,40,93,0.2,30.7,21.2
+Manchester United,63.9,64,7.5,43,90,0.1,32.6,21.3
+Everton,54.1,54,7.9,28,82,0.1,32.1,22.2
+Southampton,53.1,53,7.4,29,74,0.1,32.7,21.4
+AFC Bournemouth,48.4,48,7.6,27,72,0.1,30.3,22.9
+Crystal Palace,46.4,46,7.5,19,81,0.1,33.2,20.7
+Leicester City,45.2,45,7.5,21,74,0.1,34.0,23.9
+Stoke City,44.7,45,7.6,22,68,0.1,32.7,20.7
+West Ham United,44.1,44,7.5,21,68,0.1,32.3,24.5
+Swansea City,44.1,44,7.5,20,70,0.1,31.9,22.5
+West Bromwich Albion,43.1,43,7.3,22,64,0.1,31.2,21.7
+Newcastle United,43.0,43,7.5,16,68,0.1,31.2,23.2
+Burnley,41.8,42,7.3,21,64,0.1,34.5,23.7
+Watford,41.8,42,7.1,22,67,0.1,34.0,23.1
+Brighton and Hove Albion,41.7,41,7.6,20,64,0.2,31.7,21.3
+Huddersfield Town,41.5,41,7.6,19,68,0.1,33.5,21.7
