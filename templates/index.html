@@ -6,76 +6,105 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
 </head>
 <body>
-  <div class="container">
-    <h1>Match predictions</h1>
-    <p class="note">Model trained on historical seasons (~2006-2018). Choose two teams and the season you want to forecast.</p>
+  <div class="main-container">
+    <!-- Coloana stângă - Formular și predicții -->
+    <div class="left-column">
+      <div class="container">
+        <h1>Match predictions</h1>
+        <p class="note">Model trained on historical seasons (2006-2016). Choose two teams you want to forecast the prediction for next seazon 2017-2018.</p>
 
-    {% if error %}
-      <div class="error">{{ error }}</div>
-    {% endif %}
-
-    <form method="post">
-      <div>
-        <label for="home_team">Home team</label>
-        <select id="home_team" name="home_team" required>
-          {% for team in teams %}
-            <option value="{{ team }}" {% if team == selected_home %}selected{% endif %}>{{ team }}</option>
-          {% endfor %}
-        </select>
-      </div>
-
-      <div>
-        <label for="away_team">Away team</label>
-        <select id="away_team" name="away_team" required>
-          {% for team in teams %}
-            <option value="{{ team }}" {% if team == selected_away %}selected{% endif %}>{{ team }}</option>
-          {% endfor %}
-        </select>
-      </div>
-
-      <div>
-        <label for="season">Season</label>
-        <input type="text" id="season" name="season" value="{{ selected_season }}" placeholder="e.g. 2018-2019" />
-        <p class="note">Seasons with data: {{ seasons[-5:]|join(', ') }}. If you type a future season, we fallback to stats from {{ last_season }}.</p>
-      </div>
-
-      <button type="submit">Generate prediction</button>
-    </form>
-
-    {% if prediction %}
-      <div class="prediction-card">
-        <h2>{{ prediction.home_team }} vs {{ prediction.away_team }}</h2>
-        <p><strong>Requested season:</strong> {{ prediction.season_display }}</p>
-        {% if prediction.season_display != prediction.season_used %}
-          <p class="note">{{ prediction.season_note }}</p>
+        {% if error %}
+          <div class="error">{{ error }}</div>
         {% endif %}
-        <p><strong>Predicted outcome:</strong> {{ prediction.result_text }} ({{ prediction.result_code }})</p>
 
-        <div class="probability-bars">
-          <div class="prob-row">
-            <div class="prob-label">
-              <span>{{ prediction.home_team }}</span>
-              <span>{{ (prediction.prob_home * 100)|round(2) }}%</span>
-            </div>
-            <div class="bar"><div class="bar-fill home" style="width: {{ ((prediction.prob_home or 0) * 100)|round(2) }}%;"></div></div>
+        <form method="post">
+          <div>
+            <label for="home_team">Home team</label>
+            <select id="home_team" name="home_team" required>
+              {% for team in teams %}
+                <option value="{{ team }}" {% if team == selected_home %}selected{% endif %}>{{ team }}</option>
+              {% endfor %}
+            </select>
           </div>
-          <div class="prob-row">
-            <div class="prob-label">
-              <span>Draw</span>
-              <span>{{ (prediction.prob_draw * 100)|round(2) }}%</span>
-            </div>
-            <div class="bar"><div class="bar-fill draw" style="width: {{ (prediction.prob_draw * 100)|round(2) }}%"></div></div>
+
+          <div>
+            <label for="away_team">Away team</label>
+            <select id="away_team" name="away_team" required>
+              {% for team in teams %}
+                <option value="{{ team }}" {% if team == selected_away %}selected{% endif %}>{{ team }}</option>
+              {% endfor %}
+            </select>
           </div>
-          <div class="prob-row">
-            <div class="prob-label">
-              <span>{{ prediction.away_team }}</span>
-              <span>{{ (prediction.prob_away * 100)|round(2) }}%</span>
+
+          <button type="submit">Generate prediction</button>
+        </form>
+      </div>
+
+      {% if prediction %}
+        <div class="container prediction-card">
+          <h2>{{ prediction.home_team }} vs {{ prediction.away_team }}</h2>
+          <p><strong>Requested season: 2017-2018</strong></p>
+          {% if prediction.season_display != prediction.season_used %}
+            <p class="note">{{ prediction.season_note }}</p>
+          {% endif %}
+          <p><strong>Predicted outcome:</strong> {{ prediction.result_text }} ({{ prediction.result_code }})</p>
+
+          <div class="probability-bars">
+            <div class="prob-row">
+              <div class="prob-label">
+                <span>{{ prediction.home_team }}</span>
+                <span>{{ (prediction.prob_home * 100)|round(2) }}%</span>
+              </div>
+              <div class="bar"><div class="bar-fill home" style="width: {{ ((prediction.prob_home or 0) * 100)|round(2) }}%;"></div></div>
             </div>
-            <div class="bar"><div class="bar-fill away" style="width: {{ (prediction.prob_away * 100)|round(2) }}%"></div></div>
+            <div class="prob-row">
+              <div class="prob-label">
+                <span>Draw</span>
+                <span>{{ (prediction.prob_draw * 100)|round(2) }}%</span>
+              </div>
+              <div class="bar"><div class="bar-fill draw" style="width: {{ (prediction.prob_draw * 100)|round(2) }}%"></div></div>
+            </div>
+            <div class="prob-row">
+              <div class="prob-label">
+                <span>{{ prediction.away_team }}</span>
+                <span>{{ (prediction.prob_away * 100)|round(2) }}%</span>
+              </div>
+              <div class="bar"><div class="bar-fill away" style="width: {{ (prediction.prob_away * 100)|round(2) }}%"></div></div>
+            </div>
           </div>
         </div>
+      {% endif %}
+    </div>
+
+    <!-- Coloana dreaptă - Tabel cu Expected Points -->
+    <div class="right-column">
+      <div class="container">
+        <h2 class="section-title">Expected Season Points 2017-2018</h2>
+        
+        {% if has_expected_points %}
+          <table class="expected-points-table">
+            <thead>
+              <tr>
+                <th class="position">#</th>
+                <th class="team-name">Team</th>
+                <th class="points">Expected Points</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for team_data in expected_points_data %}
+                <tr>
+                  <td class="position">{{ loop.index }}</td>
+                  <td class="team-name">{{ team_data.Team }}</td>
+                  <td class="points">{{ "%.1f"|format(team_data.ExpectedPoints) }}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        {% else %}
+          <p class="note">Expected points data not available.</p>
+        {% endif %}
       </div>
-    {% endif %}
+    </div>
   </div>
 </body>
 </html>

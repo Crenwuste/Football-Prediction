@@ -212,7 +212,6 @@ class FootballPredictor:
         xgb_clf = WeightedXGBClassifier(
             objective='multi:softprob',
             num_class=3,
-            use_label_encoder=False,
             eval_metric='mlogloss',
             random_state=42
         )

@@ -1,19 +1,51 @@
 body {
   font-family: Arial, sans-serif;
   background: #f4f6fb;
+  margin: 0;
+  padding: 0;
+}
+
+.main-container {
+  display: flex;
+  gap: 30px;
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 0 20px;
+}
+
+.left-column {
+  flex: 1;
+  min-width: 400px;
+}
+
+.right-column {
+  flex: 1;
+  min-width: 400px;
 }
 
 .container {
-  max-width: 900px;
-  margin: 40px auto;
-  background: #fff;
+  background: white;
   padding: 30px;
   border-radius: 10px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  margin-bottom: 20px;
 }
 
 h1 {
   color: #1e2a4a;
+  margin-bottom: 10px;
+}
+
+h2 {
+  color: #1e2a4a;
+  margin-bottom: 15px;
+}
+
+.section-title {
+  color: #1e2a4a;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #3b82f6;
 }
 
 form {
@@ -25,6 +57,8 @@ form {
 label {
   font-weight: 600;
   color: #4a4f63;
+  display: block;
+  margin-bottom: 5px;
 }
 
 select,
@@ -34,6 +68,7 @@ input[type="text"] {
   border: 1px solid #cfd5e6;
   border-radius: 6px;
   font-size: 14px;
+  box-sizing: border-box;
 }
 
 button {
@@ -45,6 +80,7 @@ button {
   color: #fff;
   font-size: 16px;
   cursor: pointer;
+  transition: background 0.3s ease;
 }
 
 button:hover {
@@ -54,6 +90,7 @@ button:hover {
 .note {
   font-size: 13px;
   color: #6b7280;
+  line-height: 1.4;
 }
 
 .error {
@@ -62,11 +99,12 @@ button:hover {
   padding: 12px 16px;
   border-radius: 6px;
   margin-bottom: 20px;
+  border: 1px solid #fecaca;
 }
 
 .prediction-card {
   margin-top: 30px;
-  padding: 20px;
+  padding: 25px;
   border: 1px solid #e5e7eb;
   border-radius: 10px;
   background: #f9fafb;
@@ -77,7 +115,7 @@ button:hover {
 }
 
 .prob-row {
-  margin-bottom: 12px;
+  margin-bottom: 15px;
 }
 
 .prob-label {
@@ -85,6 +123,7 @@ button:hover {
   justify-content: space-between;
   font-weight: 600;
   color: #1f2937;
+  margin-bottom: 5px;
 }
 
 .bar {
@@ -93,12 +132,12 @@ button:hover {
   border-radius: 8px;
   background: #e5e7eb;
   overflow: hidden;
-  margin-top: 6px;
 }
 
 .bar-fill {
   height: 100%;
   border-radius: 8px;
+  transition: width 0.5s ease;
 }
 
 .home {
@@ -113,9 +152,68 @@ button:hover {
   background: #ef4444;
 }
 
+.expected-points-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+  font-size: 14px;
+}
+
+.expected-points-table th,
+.expected-points-table td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.expected-points-table th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+  color: #374151;
+}
+
+.expected-points-table tr:hover {
+  background-color: #f9fafb;
+}
+
+.expected-points-table .position {
+  font-weight: bold;
+  width: 50px;
+  text-align: center;
+  color: #6b7280;
+}
+
+.expected-points-table .team-name {
+  font-weight: 500;
+  color: #1f2937;
+}
+
+.expected-points-table .points {
+  font-weight: bold;
+  color: #3b82f6;
+  text-align: right;
+}
+
 footer {
   margin-top: 40px;
   text-align: center;
   font-size: 13px;
   color: #6b7280;
+}
+
+@media (max-width: 768px) {
+  .main-container {
+    flex-direction: column;
+    margin: 20px auto;
+    gap: 20px;
+  }
+  
+  .left-column, .right-column {
+    min-width: auto;
+  }
+  
+  .container {
+    padding: 20px;
+    margin-bottom: 0;
+  }
 }

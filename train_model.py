@@ -91,9 +91,9 @@ class FootballPredictor:
     # -------------------------
     def create_features_from(self, results_df, stats_df):
         """
-        Creează features pentru un DataFrame de results folosind stats_df.
-        IMPORTANT: stats_df trebuie să conțină intrări per team per season (dar NU pentru sezonul curent al results_df).
-        Pentru fiecare meci din results_df vom folosi stats pentru sezonul precedent al meciului.
+        Creează features pentru fiecare meci folosind stats din sezonul precedent.
+        Dacă lipsesc stats pentru echipă, folosește media pe sezonul precedent.
+        Dacă nici sezonul precedent nu există, folosește 0.
         """
         if results_df is None or stats_df is None:
             raise ValueError("results_df și stats_df trebuie să fie furnizate (nu None).")
@@ -104,7 +104,7 @@ class FootballPredictor:
             raise ValueError("Nu am găsit coloane numerice în stats_df. Verifică fișierul stats.")
 
         rows = []
-        # iterăm rând cu rând (poate fi optimizat vectorial, dar claritate > micro-optimizare aici)
+
         for idx, match in results_df.iterrows():
             season = match.get('season')
             prev = self.prev_season(season) if pd.notna(season) else None
@@ -112,24 +112,30 @@ class FootballPredictor:
             home = match.get('home_team')
             away = match.get('away_team')
 
-            # căutăm stats pentru sezonul precedent
-            home_stats = stats_df[(stats_df['team'] == home) & (stats_df['season'] == prev)]
-            away_stats = stats_df[(stats_df['team'] == away) & (stats_df['season'] == prev)]
+            # stats pentru sezon precedent
+            prev_stats = stats_df[stats_df['season'] == prev]
 
-            # dacă nu există stats pentru prev season, încercăm să folsim valorile medii pe sezonul precedent global (fallback)
-            # dar în multe cazuri e ok să completăm cu 0 (sau mean)
+            # Home stats
+            home_stats = prev_stats[prev_stats['team'] == home]
             if home_stats.empty:
-                home_vals = {c: 0.0 for c in numeric_cols}
+                if not prev_stats.empty:
+                    home_vals = prev_stats[numeric_cols].mean().to_dict()
+                else:
+                    home_vals = {c: 0.0 for c in numeric_cols}
             else:
-                # luăm prima apariție (ar trebui să fie unică per echipă+season)
                 home_vals = home_stats.iloc[0][numeric_cols].to_dict()
 
+            # Away stats
+            away_stats = prev_stats[prev_stats['team'] == away]
             if away_stats.empty:
-                away_vals = {c: 0.0 for c in numeric_cols}
+                if not prev_stats.empty:
+                    away_vals = prev_stats[numeric_cols].mean().to_dict()
+                else:
+                    away_vals = {c: 0.0 for c in numeric_cols}
             else:
                 away_vals = away_stats.iloc[0][numeric_cols].to_dict()
 
-            # construim features pentru acest meci
+            # construim features
             feat = {}
             for c in numeric_cols:
                 h = home_vals.get(c, 0.0) if pd.notna(home_vals.get(c, np.nan)) else 0.0
@@ -138,12 +144,12 @@ class FootballPredictor:
                 feat[f"{c}_away_prev"] = a
                 feat[f"{c}_diff_prev"] = h - a
 
-            # adăugăm coloanele meta (opțional)
+            # coloane meta
             feat['season'] = season
             feat['home_team'] = home
             feat['away_team'] = away
 
-            # target (poate lipsi la predicție, dar la training ar trebui să existe)
+            # target
             if 'result' in results_df.columns:
                 feat['result'] = match.get('result')
 
@@ -151,15 +157,16 @@ class FootballPredictor:
 
         features_df = pd.DataFrame(rows)
 
-        # la training, eliminăm rândurile fără target
+        # eliminăm rândurile fără target la training
         if 'result' in features_df.columns:
             features_df = features_df.dropna(subset=['result'])
 
-        # completăm NaN cu 0 (alege comportamentul preferat)
+        # completăm NaN cu 0 (ultimul fallback)
         features_df = features_df.fillna(0.0)
 
         print(f"Features create: {features_df.shape[1] - (1 if 'result' in features_df.columns else 0)} features, {len(features_df)} meciuri")
         return features_df
+
 
     # -------------------------
     # Convenience wrappers
@@ -195,17 +202,17 @@ class FootballPredictor:
 
         # Spațiu de parametri pentru RandomizedSearch
         param_grid = {
-            'alpha': [0.1, 0.2, 0.25, 0.275, 0.3, 0.325, 0.35, 0.375, 0.4],
-            'max_depth': [3, 4, 5, 6, 7],           # arbori nu prea adânci ca să nu overfit-uiască rapid
-            'learning_rate': [0.01, 0.05, 0.1],      # valori clasice
-            'n_estimators': [100, 200, 300, 400],    # fără early stopping, nu face 500+ estimatori
-            'subsample': [0.6, 0.7, 0.8, 0.9],       # fracție de rânduri per arbore
-            'colsample_bytree': [0.6, 0.7, 0.8, 0.9],# fracție de coloane per arbore
-            'gamma': [0, 0.1, 0.5, 1],               # penalizare pentru split
-            'min_child_weight': [1, 3, 5, 7],        # greutatea minimă pentru nod
-            'reg_alpha': [0, 0.01, 0.1, 1],          # L1 regularization
-            'reg_lambda': [0, 0.01, 0.1, 1],         # L2 regularization
-            'max_delta_step': [0, 1, 3]              # pentru clase dezechilibrate
+            'alpha': [0.2, 0.3, 0.35],
+            'max_depth': [3, 5, 7],
+            'learning_rate': [0.01, 0.05, 0.1],
+            'n_estimators': [200, 300],
+            'subsample': [0.7, 0.8],
+            'colsample_bytree': [0.7, 0.8],
+            'gamma': [0, 0.1, 0.5],
+            'min_child_weight': [1, 3, 5],
+            'reg_alpha': [0, 0.1, 1],
+            'reg_lambda': [0, 0.1, 1],
+            'max_delta_step': [0, 1]
         }
 
         # Model de bază
@@ -322,44 +329,68 @@ class FootballPredictor:
     def get_feature_importance(self, top_n=20):
         if self.model is None:
             raise ValueError("Modelul nu a fost antrenat încă!")
-        importance = self.model.feature_importances_
+
+        # obținem lista de feature-uri reale
+        features_in_model = self.model.get_booster().feature_names
+        importance_values = self.model.feature_importances_
+
         feature_importance = pd.DataFrame({
-            'feature': self.feature_columns,
-            'importance': importance
+            'feature': features_in_model,
+            'importance': importance_values
         }).sort_values('importance', ascending=False)
+
         print(f"\nTop {top_n} features importante:")
         print(feature_importance.head(top_n).to_string(index=False))
         return feature_importance
+
 
 
 # -------------------------
 # Exemplu de rulare: main()
 # -------------------------
 def main():
+    import numpy as np
+    import xgboost as xgb
+
     predictor = FootballPredictor()
 
+    # ----------------------------
     # 1) Încarcă datele pentru train (sezoanele 1–8) și stats
+    # ----------------------------
     predictor.load_training_data(results_path='results_train.csv', stats_path='stats-max-2016.csv')
     train_features = predictor.create_training_features()
 
-    # 2) Adaugă ponderi pe sezoane
-    alpha_default = 0.3
-    def compute_season_weight(season, alpha=alpha_default):
-        years_ago = 2017 - int(season.split('-')[0])
-        return np.exp(-alpha * years_ago)
+    # ----------------------------
+    # 2) Adaugă ponderi pe sezoane (exponential decay)
+    # ----------------------------
+    alpha_default = 0.2  # poți tune-ui acest hiperparametru
+
+    def compute_season_weight(season, k=alpha_default):
+        start_year = int(season.split('-')[0])
+        most_recent_year = int(train_features['season'].apply(lambda s: int(s.split('-')[0])).max())
+        years_ago = most_recent_year - start_year
+        return np.exp(-k * years_ago)
+
     train_features['sample_weight'] = train_features['season'].apply(lambda s: compute_season_weight(s, alpha_default))
 
+    # ----------------------------
     # 3) Pregătește X și y
+    # ----------------------------
     X_train, y_train = predictor.prepare_data(train_features)
+    w_train = train_features['sample_weight']
 
+    # ----------------------------
     # 4) Încarcă setul de validare (sezonul 9)
+    # ----------------------------
     predictor.load_test_data(test_results_path='results_2016-2017.csv')
     val_features = predictor.create_test_features()
-    val_features['result'] = predictor.test_results['result']  # adaugă coloana rezultat
+    val_features['result'] = predictor.test_results['result']
     X_val, y_val = predictor.prepare_data(val_features)
+    w_val = val_features.get('sample_weight', None)  # optional dacă vrei ponderi și pe validation
 
-
-    # 5) Antrenare cu tuning (RandomizedSearchCV) pe primele 8 sezoane + validare pe 9
+    # ----------------------------
+    # 5) Antrenare cu tuning (RandomizedSearchCV)
+    # ----------------------------
     predictor.train(
         X_train, y_train,
         use_eval_set=True,
@@ -367,26 +398,47 @@ def main():
         y_val=y_val
     )
 
+    # ----------------------------
     # 6) Re-antrenează modelul pe toate cele 9 sezoane (train + val)
+    # ----------------------------
     predictor.load_training_data(results_path='results.csv', stats_path='stats.csv')
     all_features = predictor.create_training_features()
     all_features['sample_weight'] = all_features['season'].apply(lambda s: compute_season_weight(s, alpha_default))
+
     X_all_train, y_all_train = predictor.prepare_data(all_features)
     all_weights = all_features['sample_weight']
 
     best_params = predictor.model.get_xgb_params()
+
+    # ----- Optional: eliminare feature-uri cu importanță sub prag -----
+    temp_model = xgb.XGBClassifier(**best_params)
+    temp_model.fit(X_all_train, y_all_train, sample_weight=all_weights)
+    importance = temp_model.get_booster().get_score(importance_type='weight')
+    threshold = 0
+    total = sum(importance.values())
+    keep_features = [f for f in X_all_train.columns if importance.get(f,0)/total >= threshold]
+    X_all_train_reduced = X_all_train[keep_features]
+
+    # ----- Fit final -----
     retrained_model = xgb.XGBClassifier(**best_params)
-    retrained_model.fit(X_all_train, y_all_train, sample_weight=all_weights)
+    retrained_model.fit(X_all_train_reduced, y_all_train, sample_weight=all_weights)
     predictor.model = retrained_model
 
+    # ----------------------------
     # 7) Evaluare pe TEST SECRET (sezonul 10)
+    # ----------------------------
     predictor.load_test_data(test_results_path='2017-2018.csv')
     test_features = predictor.create_test_features()
     X_test, y_test = predictor.prepare_data(test_features)
+    # Dacă vrei, poți filtra test_features și aici la keep_features pentru consistență
+    X_test = X_test[keep_features]  # aliniază coloanele cu modelul
     predictor.evaluate(X_test, y_test)
 
+    # ----------------------------
     # 8) Importanța features
+    # ----------------------------
     predictor.get_feature_importance()
+
 
 if __name__ == '__main__':
     main()
