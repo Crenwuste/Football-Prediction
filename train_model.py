@@ -89,11 +89,12 @@ class FootballPredictor:
     # -------------------------
     # Feature building (general)
     # -------------------------
-    def create_features_from(self, results_df, stats_df):
+    def create_features_from(self, results_df, stats_df, save_path='combined_train.csv'):
         """
-        Creează features pentru fiecare meci folosind stats din sezonul precedent.
-        Dacă lipsesc stats pentru echipă, folosește media pe sezonul precedent.
-        Dacă nici sezonul precedent nu există, folosește 0.
+        Creează features pentru un DataFrame de results folosind stats_df.
+        IMPORTANT: stats_df trebuie să conțină intrări per team per season (dar NU pentru sezonul curent al results_df).
+        Pentru fiecare meci din results_df vom folosi stats pentru sezonul precedent al meciului.
+        Poate salva rezultatul într-un CSV pentru verificare (save_path).
         """
         if results_df is None or stats_df is None:
             raise ValueError("results_df și stats_df trebuie să fie furnizate (nu None).")
@@ -104,7 +105,6 @@ class FootballPredictor:
             raise ValueError("Nu am găsit coloane numerice în stats_df. Verifică fișierul stats.")
 
         rows = []
-
         for idx, match in results_df.iterrows():
             season = match.get('season')
             prev = self.prev_season(season) if pd.notna(season) else None
@@ -112,28 +112,13 @@ class FootballPredictor:
             home = match.get('home_team')
             away = match.get('away_team')
 
-            # stats pentru sezon precedent
-            prev_stats = stats_df[stats_df['season'] == prev]
+            # căutăm stats pentru sezonul precedent
+            home_stats = stats_df[(stats_df['team'] == home) & (stats_df['season'] == prev)]
+            away_stats = stats_df[(stats_df['team'] == away) & (stats_df['season'] == prev)]
 
-            # Home stats
-            home_stats = prev_stats[prev_stats['team'] == home]
-            if home_stats.empty:
-                if not prev_stats.empty:
-                    home_vals = prev_stats[numeric_cols].mean().to_dict()
-                else:
-                    home_vals = {c: 0.0 for c in numeric_cols}
-            else:
-                home_vals = home_stats.iloc[0][numeric_cols].to_dict()
-
-            # Away stats
-            away_stats = prev_stats[prev_stats['team'] == away]
-            if away_stats.empty:
-                if not prev_stats.empty:
-                    away_vals = prev_stats[numeric_cols].mean().to_dict()
-                else:
-                    away_vals = {c: 0.0 for c in numeric_cols}
-            else:
-                away_vals = away_stats.iloc[0][numeric_cols].to_dict()
+            # fallback la 0 dacă nu există stats
+            home_vals = home_stats.iloc[0][numeric_cols].to_dict() if not home_stats.empty else {c: 0.0 for c in numeric_cols}
+            away_vals = away_stats.iloc[0][numeric_cols].to_dict() if not away_stats.empty else {c: 0.0 for c in numeric_cols}
 
             # construim features
             feat = {}
@@ -144,12 +129,10 @@ class FootballPredictor:
                 feat[f"{c}_away_prev"] = a
                 feat[f"{c}_diff_prev"] = h - a
 
-            # coloane meta
+            # meta info
             feat['season'] = season
             feat['home_team'] = home
             feat['away_team'] = away
-
-            # target
             if 'result' in results_df.columns:
                 feat['result'] = match.get('result')
 
@@ -157,12 +140,15 @@ class FootballPredictor:
 
         features_df = pd.DataFrame(rows)
 
-        # eliminăm rândurile fără target la training
         if 'result' in features_df.columns:
             features_df = features_df.dropna(subset=['result'])
 
-        # completăm NaN cu 0 (ultimul fallback)
         features_df = features_df.fillna(0.0)
+
+        # salvare CSV dacă se cere
+        if save_path:
+            features_df.to_csv(save_path, index=False)
+            print(f"Combined features saved to {save_path}")
 
         print(f"Features create: {features_df.shape[1] - (1 if 'result' in features_df.columns else 0)} features, {len(features_df)} meciuri")
         return features_df
