@@ -2,6 +2,7 @@
 from flask import Flask, render_template, request
 import pandas as pd
 from predict import MatchPredictor
+from train_model import WeightedXGBClassifier
 
 app = Flask(__name__)
 
