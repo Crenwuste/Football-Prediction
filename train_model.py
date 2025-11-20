@@ -219,7 +219,7 @@ class FootballPredictor:
         search = RandomizedSearchCV(
             estimator=xgb_clf,
             param_distributions=param_grid,
-            n_iter=100,
+            n_iter=50,
             scoring='accuracy',
             cv=3,
             verbose=1,

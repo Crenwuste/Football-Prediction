@@ -12,7 +12,8 @@ predictor = MatchPredictor()
 def load_metadata():
     stats = pd.read_csv('stats.csv')
     results = pd.read_csv('results.csv')
-    teams = sorted(stats['team'].dropna().unique())
+    current_season_teams = pd.read_csv('expected_points_2017_2018.csv')
+    teams = sorted(current_season_teams['team'].dropna().unique())
     seasons = sorted(results['season'].dropna().astype(str).unique())
     return teams, seasons
 
