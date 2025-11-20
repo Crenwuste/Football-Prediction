@@ -198,7 +198,7 @@ class FootballPredictor:
             'alpha': [0.1, 0.2, 0.25, 0.275, 0.3, 0.325, 0.35, 0.375, 0.4, 0.5, 0.6, 0.65, 0.7],
             'max_depth': [3, 4, 5, 6, 7],           # arbori nu prea adânci ca să nu overfit-uiască rapid
             'learning_rate': [0.01, 0.05, 0.1],      # valori clasice
-            'n_estimators': [100, 200, 300, 400, 600],    # fără early stopping, nu face 500+ estimatori
+            'n_estimators': [100, 200, 300, 400],    # fără early stopping, nu face 500+ estimatori
             'subsample': [0.6, 0.7, 0.8, 0.9],       # fracție de rânduri per arbore
             'colsample_bytree': [0.6, 0.7, 0.8, 0.9],# fracție de coloane per arbore
             'gamma': [0, 0.1, 0.5, 1],               # penalizare pentru split
