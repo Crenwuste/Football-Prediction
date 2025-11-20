@@ -249,7 +249,7 @@ def save_expected_points_2017_2018(csv_matches='output/all_matches_2017_2018.csv
         points_dict[away_team] += expected_points_away
     
     # Rotunjire la int după ce s-au adunat toate punctele
-    points_dict = {team: int(round(points)) for team, points in points_dict.items()}
+    points_dict = {team: points for team, points in points_dict.items()}
     
     points_df = pd.DataFrame(list(points_dict.items()), columns=['team', 'expected_points'])
     points_df = points_df.sort_values('expected_points', ascending=False)

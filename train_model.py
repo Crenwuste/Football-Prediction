@@ -30,13 +30,232 @@ class FootballPredictor:
     def __init__(self):
         self.model = None
         self.feature_columns = None
-        # Mapare pentru rezultate: 'A'=0, 'D'=1, 'H'=2
         self.result_mapping = {'A': 0, 'D': 1, 'H': 2}
         self.reverse_mapping = {0: 'A', 1: 'D', 2: 'H'}
-        # DataFrames loaded from disk
-        self.results = None        # all training results (multiple seasons)
-        self.stats = None          # per-team-per-season stats (all seasons)
-        self.test_results = None   # results for last season (2017-2018)
+        self.results = None
+        self.stats = None
+        self.test_results = None
+    
+    def add_experience_weights(self, features_df, stats_df, min_matches=10, max_penalty=0.5):
+        """
+        Reduce ponderea pentru echipele cu puține meciuri jucate (promovate recent)
+        
+        Args:
+            features_df: DataFrame cu features pentru meciuri
+            stats_df: DataFrame cu statistici pe echipe și sezoane
+            min_matches: numărul minim de meciuri pentru a considera o echipă experiențiată
+            max_penalty: penalitatea maximă (0.5 = jumătate din pondere)
+        """
+        print("Calcul ponderi bazate pe experiența echipelor...")
+        
+        # Calculează numărul total de meciuri jucate per echipă până la fiecare sezon
+        experience_data = {}
+        
+        # Pentru fiecare echipă și sezon, calculează meciurile jucate în sezoanele anterioare
+        all_teams = stats_df['team'].unique()
+        all_seasons = sorted(stats_df['season'].unique())
+        
+        for team in all_teams:
+            team_data = stats_df[stats_df['team'] == team].sort_values('season')
+            total_matches = 0
+            for season in all_seasons:
+                season_stats = team_data[team_data['season'] == season]
+                if not season_stats.empty:
+                    # Presupunem că avem o coloană 'matches_played' sau calculăm din wins/draws/losses
+                    if 'matches_played' in season_stats.columns:
+                        matches_played = season_stats.iloc[0]['matches_played']
+                    elif all(col in season_stats.columns for col in ['wins', 'draws', 'losses']):
+                        matches_played = (season_stats.iloc[0]['wins'] + 
+                                        season_stats.iloc[0]['draws'] + 
+                                        season_stats.iloc[0]['losses'])
+                    else:
+                        # Fallback: estimează 38 de meciuri per sezon pentru ligile europene
+                        matches_played = 38
+                    
+                    total_matches += matches_played
+                    experience_data[(team, season)] = total_matches
+                else:
+                    experience_data[(team, season)] = total_matches
+        
+        # Calculează ponderile pentru fiecare meci
+        weights = []
+        inexperienced_count = 0
+        
+        for idx, match in features_df.iterrows():
+            season = match['season']
+            home_team = match['home_team']
+            away_team = match['away_team']
+            
+            # Obține experiența ambelor echipe în sezonul PRECEDENT
+            prev_season = self.prev_season(season)
+            
+            home_experience = experience_data.get((home_team, prev_season), 0)
+            away_experience = experience_data.get((away_team, prev_season), 0)
+            
+            # Experiența minimă dintre cele două echipe
+            min_experience = min(home_experience, away_experience)
+            
+            # Calculează penalitatea (1.0 = nicio penalitate, 0.5 = jumătate din pondere)
+            if min_experience >= min_matches * 3:  # Experiențată (3+ sezoane)
+                penalty = 1.0
+            elif min_experience >= min_matches:    # Moderată
+                penalty = 0.8
+            elif min_experience >= min_matches // 2:  # Puțină experiență
+                penalty = 0.6
+            else:                                   # Foarte puțină experiență
+                penalty = max_penalty
+                inexperienced_count += 1
+            
+            weights.append(penalty)
+        
+        print(f"Meciuri cu echipe inexperimentate: {inexperienced_count}/{len(weights)} ({(inexperienced_count/len(weights))*100:.1f}%)")
+        return weights
+
+    def add_experience_weights_simple(self, features_df, stats_df, min_matches=30):
+        """
+        Versiune simplificată - folosește doar sezoanele jucate
+        """
+        print("Calcul ponderi bazate pe numărul de sezoane jucate...")
+        
+        # Calculează numărul de sezoane jucate per echipă până la fiecare sezon
+        seasons_played = {}
+        
+        all_teams = stats_df['team'].unique()
+        all_seasons = sorted(stats_df['season'].unique())
+        
+        for team in all_teams:
+            team_seasons = stats_df[stats_df['team'] == team]['season'].unique()
+            cumulative_seasons = 0
+            for season in all_seasons:
+                if season in team_seasons:
+                    cumulative_seasons += 1
+                seasons_played[(team, season)] = cumulative_seasons
+        
+        weights = []
+        inexperienced_count = 0
+        
+        for idx, match in features_df.iterrows():
+            season = match['season']
+            home_team = match['home_team']
+            away_team = match['away_team']
+            
+            # Obține numărul de sezoane jucate în sezonul PRECEDENT
+            prev_season = self.prev_season(season)
+            
+            home_seasons = seasons_played.get((home_team, prev_season), 0)
+            away_seasons = seasons_played.get((away_team, prev_season), 0)
+            
+            # Numărul minim de sezoane dintre cele două echipe
+            min_seasons = min(home_seasons, away_seasons)
+            
+            # Calculează penalitatea
+            if min_seasons >= 3:      # Experiențată (3+ sezoane)
+                penalty = 1.0
+            elif min_seasons == 2:    # 2 sezoane
+                penalty = 0.8
+            elif min_seasons == 1:    # 1 sezon
+                penalty = 0.6
+            else:                     # Promovată recent (0 sezoane)
+                penalty = 0.4
+                inexperienced_count += 1
+            
+            weights.append(penalty)
+        
+        print(f"Meciuri cu echipe promovate recent: {inexperienced_count}/{len(weights)} ({(inexperienced_count/len(weights))*100:.1f}%)")
+        
+        # Afișează distribuția
+        unique_weights, weight_counts = np.unique(weights, return_counts=True)
+        print("Distribuția ponderilor experiență:")
+        for w, count in zip(unique_weights, weight_counts):
+            print(f"  Weight {w}: {count} meciuri ({count/len(weights)*100:.1f}%)")
+        
+        return weights
+
+    def add_head_to_head_weights(self, features_df, h2h_boost=2.0):
+        """Adaugă ponderi pentru meciurile head-to-head"""
+        print("Adăugare ponderi head-to-head...")
+        
+        # Creează o copie pentru head-to-head analysis
+        all_matches = features_df[['season', 'home_team', 'away_team']].copy()
+        
+        # Sortează după sezon pentru a găsi doar meciurile anterioare
+        all_matches = all_matches.sort_values('season')
+        
+        weights = []
+        h2h_count = 0
+        
+        for idx, match in features_df.iterrows():
+            current_season = match['season']
+            home_team = match['home_team']
+            away_team = match['away_team']
+            
+            # Găsește meciurile anterioare dintre aceste echipe (din sezoanele anterioare)
+            previous_matches = all_matches[
+                (all_matches['season'] < current_season) &
+                (
+                    ((all_matches['home_team'] == home_team) & (all_matches['away_team'] == away_team)) |
+                    ((all_matches['home_team'] == away_team) & (all_matches['away_team'] == home_team))
+                )
+            ]
+            
+            # Aplică boost dacă au jucat împotriva în trecut
+            if len(previous_matches) > 0:
+                weights.append(h2h_boost)
+                h2h_count += 1
+            else:
+                weights.append(1.0)
+        
+        print(f"Ponderi head-to-head: {h2h_count} meciuri au boost H2H ({(h2h_count/len(weights))*100:.1f}%)")
+        return weights
+    
+    def add_head_to_head_frequency_weights(self, features_df, max_boost=3.0):
+        """Ponderi bazate pe frecvența meciurilor head-to-head"""
+        print("Adăugare ponderi bazate pe frecvența head-to-head...")
+        
+        all_matches = features_df[['season', 'home_team', 'away_team']].copy()
+        all_matches = all_matches.sort_values('season')
+        
+        weights = []
+        weight_distribution = {1.0: 0, 1.5: 0, 2.0: 0, 2.5: 0}
+        
+        for idx, match in features_df.iterrows():
+            current_season = match['season']
+            home_team = match['home_team']
+            away_team = match['away_team']
+            
+            # Numără meciurile anterioare
+            previous_matches = all_matches[
+                (all_matches['season'] < current_season) &
+                (
+                    ((all_matches['home_team'] == home_team) & (all_matches['away_team'] == away_team)) |
+                    ((all_matches['home_team'] == away_team) & (all_matches['away_team'] == home_team))
+                )
+            ]
+            
+            h2h_count = len(previous_matches)
+            
+            # Aplică boost progresiv bazat pe numărul de meciuri anterioare
+            if h2h_count == 0:
+                weight = 1.0
+            elif h2h_count <= 2:
+                weight = 1.5  # boost moderat pentru puține meciuri
+            elif h2h_count <= 5:
+                weight = 2.0  # boost mediu
+            else:
+                weight = 2.5  # boost mare pentru rivalități de lungă durată
+                
+            weight = min(weight, max_boost)
+            weights.append(weight)
+            weight_distribution[weight] = weight_distribution.get(weight, 0) + 1
+        
+        # Afișează distribuția
+        total_matches = len(weights)
+        print("Distribuția ponderilor H2H:")
+        for weight, count in sorted(weight_distribution.items()):
+            if count > 0:
+                print(f"  Weight {weight}: {count} meciuri ({count/total_matches*100:.1f}%)")
+        
+        return weights
     
     # -------------------------
     # Loading
@@ -169,13 +388,19 @@ class FootballPredictor:
         if 'result' not in features_df.columns:
             raise ValueError("features_df trebuie să conțină coloana 'result' pentru a pregăti y.")
 
-        # Coloane de eliminat - INCLUDE sample_weight aici pentru a-l elimina din features!
-        columns_to_drop = ["result", "season", "home_team", "away_team", "sample_weight"]
+        # COLOANE DE ELIMINAT - include toate coloanele de ponderi!
+        columns_to_drop = [
+            "result", "season", "home_team", "away_team", 
+            "sample_weight", "season_weight"
+        ]
         
-        X = features_df.drop(columns_to_drop, axis=1, errors='ignore')
+        # Elimină doar coloanele care există
+        existing_columns_to_drop = [col for col in columns_to_drop if col in features_df.columns]
+        X = features_df.drop(existing_columns_to_drop, axis=1)
+        
         y = features_df["result"].map(self.result_mapping)
 
-        # Asiguram că toate coloanele sunt numerice
+        # Asigură-te că toate coloanele sunt numerice
         for col in X.columns:
             if X[col].dtype == 'object':
                 X[col] = pd.to_numeric(X[col], errors='coerce')
@@ -217,7 +442,7 @@ class FootballPredictor:
         search = RandomizedSearchCV(
             estimator=xgb_clf,
             param_distributions=param_grid,
-            n_iter=50,
+            n_iter=100,
             scoring='accuracy',
             cv=3,
             verbose=1,
@@ -298,7 +523,7 @@ def main():
     predictor = FootballPredictor()
 
     # ----------------------------
-    # 1) Încarcă datele pentru train cu sezoanele 2008-2016.
+    # 1) Încarcă datele pentru train
     # ----------------------------
     print("=== PAS 1: ÎNCĂRCARE DATE ANTRENARE ===")
     predictor.load_training_data(results_path='databases/results_train.csv', stats_path='databases/stats-max-2016.csv')
@@ -307,21 +532,68 @@ def main():
     # 2) Creează features pentru antrenare
     # ----------------------------
     print("\n=== PAS 2: CREARE FEATURES ANTRENARE ===")
-    train_features = predictor.create_features_from(predictor.results, predictor.stats, 'databases/train_features.csv')
+    train_features = predictor.create_features_from(predictor.results, predictor.stats, 'train_features.csv')
     
     # ----------------------------
-    # 3) Adaugă ponderi pe sezoane
+    # 3) CALCUL PONDERI COMBINATE (SEZOANE + HEAD-TO-HEAD + EXPERIENȚĂ)
     # ----------------------------
-    print("\n=== PAS 3: CALCUL PONDERI SEZOANE ===")
-    train_features['sample_weight'] = train_features['season'].apply(lambda s: compute_season_weight(s, 0.2))
-    print(f"Range ponderi: [{train_features['sample_weight'].min():.3f}, {train_features['sample_weight'].max():.3f}]")
+    print("\n=== PAS 3: CALCUL PONDERI COMBINATE ===")
+    
+    # Ponderi pentru sezoane recente
+    train_features['season_weight'] = train_features['season'].apply(lambda s: compute_season_weight(s, 0.2))
+    
+    # Ponderi pentru head-to-head
+    h2h_weights = predictor.add_head_to_head_weights(train_features, h2h_boost=2.0)
+    
+    # Ponderi pentru experiența echipelor
+    experience_weights = predictor.add_experience_weights_simple(train_features, predictor.stats, min_matches=30)
+    
+    # COMBINĂ TOATE PONDERILE (înmulțire)
+    train_features['sample_weight'] = (
+        train_features['season_weight'] * 
+        h2h_weights * 
+        experience_weights
+    )
     
     # ----------------------------
-    # 4) Pregătește X și y pentru antrenare (EXCLUDE sample_weight din features)
+    # 4) ANALIZĂ PONDERI FINALE
+    # ----------------------------
+    print(f"\n=== ANALIZĂ PONDERI FINALE ===")
+    print(f"Min weight: {train_features['sample_weight'].min():.3f}")
+    print(f"Max weight: {train_features['sample_weight'].max():.3f}")
+    print(f"Mean weight: {train_features['sample_weight'].mean():.3f}")
+    
+    # Analiză detaliată
+    weight_ranges = [
+        (0, 0.5, "Foarte scăzută (promovate recent)"),
+        (0.5, 0.8, "Scăzută (puțină experiență)"),
+        (0.8, 1.2, "Normală"),
+        (1.2, 2.0, "Ridicată (H2H)"),
+        (2.0, 10.0, "Foarte ridicată")
+    ]
+    
+    print("\nDistribuția ponderilor finale:")
+    for min_w, max_w, desc in weight_ranges:
+        count = len(train_features[
+            (train_features['sample_weight'] >= min_w) & 
+            (train_features['sample_weight'] < max_w)
+        ])
+        percentage = (count / len(train_features)) * 100
+        print(f"  {desc}: {count} meciuri ({percentage:.1f}%)")
+    
+    # Verifică meciurile cu pondere foarte scăzută
+    low_weight_matches = train_features[train_features['sample_weight'] < 0.5]
+    if len(low_weight_matches) > 0:
+        print(f"\nExemple meciuri cu pondere scăzută (promovate recent):")
+        for idx, match in low_weight_matches.head(3).iterrows():
+            print(f"  {match['home_team']} vs {match['away_team']} - weight: {match['sample_weight']:.3f}")
+    
+    # ----------------------------
+    # 5) Pregătește X și y pentru antrenare
     # ----------------------------
     print("\n=== PAS 4: PREGĂTIRE DATE ANTRENARE ===")
     X_train, y_train = predictor.prepare_data(train_features)
-    w_train = train_features['sample_weight']  # păstrăm weights separat
+    w_train = train_features['sample_weight']
     
     # Verifică distribuția target
     unique_y, counts_y = np.unique(y_train, return_counts=True)
@@ -329,40 +601,49 @@ def main():
     print(f"Distribuție target antrenare: {y_distribution}")
     
     # ----------------------------
-    # 5) Încarcă setul de validare (sezonul 2016-2017) pentru tuning
+    # 6) Încarcă setul de validare
     # ----------------------------
     print("\n=== PAS 5: ÎNCĂRCARE DATE VALIDARE ===")
     predictor.load_test_data(test_results_path='databases/results_2016-2017.csv')
-    val_features = predictor.create_features_from(predictor.test_results, predictor.stats, 'databases/val_features.csv')
+    val_features = predictor.create_features_from(predictor.test_results, predictor.stats, 'val_features.csv')
     
-    # NU avem sample_weight la validare
     X_val, y_val = predictor.prepare_data(val_features)
     
     # ----------------------------
-    # 6) Antrenare cu tuning pe 2008-2016, validare pe 2016-2017
+    # 7) Antrenare cu tuning (CU PONDERI H2H!)
     # ----------------------------
-    print("\n=== PAS 6: ANTRENARE CU TUNING ===")
+    print("\n=== PAS 6: ANTRENARE CU TUNING (CU PONDERI H2H) ===")
     best_params = predictor.train_with_tuning(X_train, y_train, sample_weight=w_train)
     
     # ----------------------------
-    # 7) Evaluare pe validare (2016-2017)
+    # 8) Evaluare pe validare (2016-2017)
     # ----------------------------
     print("\n=== PAS 7: EVALUARE PE VALIDARE (2016-2017) ===")
     val_accuracy = predictor.evaluate(X_val, y_val)
     
     # ----------------------------
-    # 8) Re-antrenare pe TOATE datele (2008-2017) pentru testul final
+    # 9) Re-antrenare pe TOATE datele (2008-2017) pentru testul final
     # ----------------------------
     print("\n=== PAS 8: RE-ANTRENARE PE TOATE DATELE ===")
     
     # Încarcă toate datele (2008-2017)
     predictor.load_training_data(results_path='databases/results.csv', stats_path='databases/stats.csv')
-    all_features = predictor.create_features_from(predictor.results, predictor.stats, 'databases/all_features.csv')
-    all_features['sample_weight'] = all_features['season'].apply(lambda s: compute_season_weight(s, 0.2))
+    all_features = predictor.create_features_from(predictor.results, predictor.stats, 'all_features.csv')
+    
+    # ADAUGĂ TOATE PONDERILE ȘI AICI
+    all_features['season_weight'] = all_features['season'].apply(lambda s: compute_season_weight(s, 0.2))
+    h2h_weights_all = predictor.add_head_to_head_weights(all_features, h2h_boost=2.0)
+    experience_weights_all = predictor.add_experience_weights_simple(all_features, predictor.stats, min_matches=30)
+
+    all_features['sample_weight'] = (
+        all_features['season_weight'] * 
+        h2h_weights_all * 
+        experience_weights_all
+    )
     
     # Folosim același set de feature columns ca la antrenarea inițială
     X_all, y_all = predictor.prepare_data(all_features)
-    w_all = all_features['sample_weight']  # păstrăm weights separat
+    w_all = all_features['sample_weight']
     
     # Antrenare finală cu cei mai buni parametri
     final_model = xgb.XGBClassifier(
@@ -377,11 +658,11 @@ def main():
     predictor.model = final_model
     
     # ----------------------------
-    # 9) Test final pe datele SECRETE (2017-2018)
+    # 10) Test final pe datele SECRETE (2017-2018)
     # ----------------------------
     print("\n=== PAS 9: TEST FINAL PE DATE SECRETE (2017-2018) ===")
     predictor.load_test_data(test_results_path='databases/2017-2018.csv')
-    test_features = predictor.create_features_from(predictor.test_results, predictor.stats, 'databases/test_features.csv')
+    test_features = predictor.create_features_from(predictor.test_results, predictor.stats, 'test_features.csv')
     
     # NU avem sample_weight la test
     X_test, y_test = predictor.prepare_data(test_features)
@@ -389,7 +670,7 @@ def main():
     test_accuracy = predictor.evaluate(X_test, y_test)
     
     # ----------------------------
-    # 10) Analiza modelului
+    # 11) Analiza modelului
     # ----------------------------
     print("\n=== PAS 10: ANALIZA MODELULUI ===")
     predictor.get_feature_importance()
