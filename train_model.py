@@ -1,6 +1,6 @@
 """
 Pipeline corect pentru antrenarea unui model XGBoost pentru predicții de fotbal
-- Folosește pentru fiecare meci doar statistici din sezonul precedent (fără leakage).
+- Folosește pentru fiecare meci doar statistici din sezonul precedent.
 - Training: toate sezoanele din results.csv (fără sezonul 2017-2018)
 - Test: rezultate din 2017-2018 (folosind stats din 2016-2017)
 """
@@ -8,7 +8,7 @@ import math
 import pandas as pd
 import numpy as np
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
-from sklearn.model_selection import RandomizedSearchCV, train_test_split
+from sklearn.model_selection import RandomizedSearchCV
 import xgboost as xgb
 import pickle
 import os
@@ -34,15 +34,15 @@ class FootballPredictor:
         self.result_mapping = {'A': 0, 'D': 1, 'H': 2}
         self.reverse_mapping = {0: 'A', 1: 'D', 2: 'H'}
         # DataFrames loaded from disk
-        self.results = None        # all training results (multiple seasons, without last)
-        self.stats = None          # per-team-per-season stats (all seasons except last)
+        self.results = None        # all training results (multiple seasons)
+        self.stats = None          # per-team-per-season stats (all seasons)
         self.test_results = None   # results for last season (2017-2018)
     
     # -------------------------
     # Loading
     # -------------------------
-    def load_training_data(self, results_path='results_train.csv', stats_path='stats-max-2016.csv'):
-        """Încarcă datele de antrenare: results + stats (stats NU conține sezonul de test)."""
+    def load_training_data(self, results_path='databases/results_train.csv', stats_path='databases/stats-max-2016.csv'):
+        """Încarcă datele de antrenare: results + stats."""
         print("Încărcare date de antrenare...")
         self.results = pd.read_csv(results_path)
         self.stats = pd.read_csv(stats_path)
@@ -51,7 +51,7 @@ class FootballPredictor:
         print(f"Sezoane în results: {self.results['season'].unique()}")
         print(f"Sezoane în stats: {self.stats['season'].unique()}")
     
-    def load_test_data(self, test_results_path='results_2016-2017.csv'):
+    def load_test_data(self, test_results_path='databases/results_2016-2017.csv'):
         """Încarcă doar rezultatele din sezonul de test."""
         print("Încărcare date de test...")
         self.test_results = pd.read_csv(test_results_path)
@@ -77,10 +77,10 @@ class FootballPredictor:
                 year = int(season_str)
                 return str(year-1)
             except Exception:
-                return season_str  # last resort
+                return season_str
 
     def _get_numeric_stat_columns(self, stats_df):
-        """Returnează coloanele numerice utile pentru features (exclude 'season' dacă apare)."""
+        """Returnează coloanele numerice utile pentru features."""
         exclude_cols = ['season', 'team']
         numeric_cols = [col for col in stats_df.select_dtypes(include=[np.number]).columns 
                        if col not in exclude_cols]
@@ -96,14 +96,12 @@ class FootballPredictor:
         Pentru fiecare meci din results_df vom folosi stats pentru sezonul precedent al meciului.
         """
         if results_df is None or stats_df is None:
-            raise ValueError("results_df și stats_df trebuie să fie furnizate (nu None).")
+            raise ValueError("results_df și stats_df trebuie să fie furnizate.")
 
         print("\nCreare features (folosind stats din sezonul precedent)...")
         numeric_cols = self._get_numeric_stat_columns(stats_df)
         if not numeric_cols:
             raise ValueError("Nu am găsit coloane numerice în stats_df. Verifică fișierul stats.")
-
-        print(f"Coloane numerice folosite: {numeric_cols}")
 
         rows = []
         for idx, match in results_df.iterrows():
@@ -169,7 +167,7 @@ class FootballPredictor:
     def prepare_data(self, features_df):
         """Pregătește X și y din features_df (fără split)."""
         if 'result' not in features_df.columns:
-            raise ValueError("features_df trebuie să conțină coloana 'result' pentru a pregăti y (sau folosește doar pentru predict).")
+            raise ValueError("features_df trebuie să conțină coloana 'result' pentru a pregăti y.")
 
         # Coloane de eliminat - INCLUDE sample_weight aici pentru a-l elimina din features!
         columns_to_drop = ["result", "season", "home_team", "away_team", "sample_weight"]
@@ -177,7 +175,7 @@ class FootballPredictor:
         X = features_df.drop(columns_to_drop, axis=1, errors='ignore')
         y = features_df["result"].map(self.result_mapping)
 
-        # Asigură-te că toate coloanele sunt numerice
+        # Asiguram că toate coloanele sunt numerice
         for col in X.columns:
             if X[col].dtype == 'object':
                 X[col] = pd.to_numeric(X[col], errors='coerce')
@@ -189,7 +187,7 @@ class FootballPredictor:
         return X, y
 
     # -------------------------
-    # Training / Evaluate
+    # Training
     # -------------------------
     def train_with_tuning(self, X_train, y_train, sample_weight=None):
         """Antrenează modelul XGBoost folosind RandomizedSearchCV pentru tuning automat."""
@@ -247,7 +245,7 @@ class FootballPredictor:
             raise ValueError("Modelul nu a fost antrenat încă!")
         print("\nEvaluare model...")
         
-        # Asigură-te că X_test are aceleași coloane ca la antrenare
+        # Asigurăm că X_test are aceleași coloane ca la antrenare
         missing_cols = set(self.feature_columns) - set(X_test.columns)
         extra_cols = set(X_test.columns) - set(self.feature_columns)
         
@@ -294,25 +292,25 @@ class FootballPredictor:
 
 
 # -------------------------
-# Exemplu de rulare: main()
+# main()
 # -------------------------
 def main():
     predictor = FootballPredictor()
 
     # ----------------------------
-    # 1) Încarcă datele pentru train (sezoanele 2008-2016) și stats până în 2016
+    # 1) Încarcă datele pentru train cu sezoanele 2008-2016.
     # ----------------------------
     print("=== PAS 1: ÎNCĂRCARE DATE ANTRENARE ===")
-    predictor.load_training_data(results_path='results_train.csv', stats_path='stats-max-2016.csv')
+    predictor.load_training_data(results_path='databases/results_train.csv', stats_path='databases/stats-max-2016.csv')
     
     # ----------------------------
     # 2) Creează features pentru antrenare
     # ----------------------------
     print("\n=== PAS 2: CREARE FEATURES ANTRENARE ===")
-    train_features = predictor.create_features_from(predictor.results, predictor.stats, 'train_features.csv')
+    train_features = predictor.create_features_from(predictor.results, predictor.stats, 'databases/train_features.csv')
     
     # ----------------------------
-    # 3) Adaugă ponderi pe sezoane (exponential decay)
+    # 3) Adaugă ponderi pe sezoane
     # ----------------------------
     print("\n=== PAS 3: CALCUL PONDERI SEZOANE ===")
     train_features['sample_weight'] = train_features['season'].apply(lambda s: compute_season_weight(s, 0.2))
@@ -334,8 +332,8 @@ def main():
     # 5) Încarcă setul de validare (sezonul 2016-2017) pentru tuning
     # ----------------------------
     print("\n=== PAS 5: ÎNCĂRCARE DATE VALIDARE ===")
-    predictor.load_test_data(test_results_path='results_2016-2017.csv')
-    val_features = predictor.create_features_from(predictor.test_results, predictor.stats, 'val_features.csv')
+    predictor.load_test_data(test_results_path='databases/results_2016-2017.csv')
+    val_features = predictor.create_features_from(predictor.test_results, predictor.stats, 'databases/val_features.csv')
     
     # NU avem sample_weight la validare
     X_val, y_val = predictor.prepare_data(val_features)
@@ -358,8 +356,8 @@ def main():
     print("\n=== PAS 8: RE-ANTRENARE PE TOATE DATELE ===")
     
     # Încarcă toate datele (2008-2017)
-    predictor.load_training_data(results_path='results.csv', stats_path='stats.csv')
-    all_features = predictor.create_features_from(predictor.results, predictor.stats, 'all_features.csv')
+    predictor.load_training_data(results_path='databases/results.csv', stats_path='databases/stats.csv')
+    all_features = predictor.create_features_from(predictor.results, predictor.stats, 'databases/all_features.csv')
     all_features['sample_weight'] = all_features['season'].apply(lambda s: compute_season_weight(s, 0.2))
     
     # Folosim același set de feature columns ca la antrenarea inițială
@@ -382,8 +380,8 @@ def main():
     # 9) Test final pe datele SECRETE (2017-2018)
     # ----------------------------
     print("\n=== PAS 9: TEST FINAL PE DATE SECRETE (2017-2018) ===")
-    predictor.load_test_data(test_results_path='2017-2018.csv')
-    test_features = predictor.create_features_from(predictor.test_results, predictor.stats, 'test_features.csv')
+    predictor.load_test_data(test_results_path='databases/2017-2018.csv')
+    test_features = predictor.create_features_from(predictor.test_results, predictor.stats, 'databases/test_features.csv')
     
     # NU avem sample_weight la test
     X_test, y_test = predictor.prepare_data(test_features)

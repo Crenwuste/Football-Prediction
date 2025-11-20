@@ -9,7 +9,7 @@ import itertools
 
 class MatchPredictor:
     def __init__(self, model_path='model_final.pkl', features_path='feature_columns.pkl', 
-                 stats_path='stats.csv'):
+                 stats_path='databases/stats.csv'):
         """Încarcă modelul și datele necesare"""
         print("Încărcare model...")
         with open(model_path, 'rb') as f:
@@ -175,13 +175,13 @@ class MatchPredictor:
         return pd.DataFrame(results)
 
 
-def save_all_matches_2017_2018_to_csv(output_file='all_matches_2017_2018.csv'):
+def save_all_matches_2017_2018_to_csv(output_file='output/all_matches_2017_2018.csv'):
     """Salvează toate meciurile posibile pentru echipele din 2017-2018.csv"""
     predictor = MatchPredictor()
     
     # Încarcă meciurile reale din sezonul 2017-2018 pentru a extrage echipele
     try:
-        real_matches_2017_2018 = pd.read_csv('2017-2018.csv')
+        real_matches_2017_2018 = pd.read_csv('databases/2017-2018.csv')
         home_teams = real_matches_2017_2018['home_team'].unique().tolist()
         away_teams = real_matches_2017_2018['away_team'].unique().tolist()
         
@@ -220,7 +220,7 @@ def save_all_matches_2017_2018_to_csv(output_file='all_matches_2017_2018.csv'):
     print(f"- Meciuri per echipă: {len(df_results) // len(teams_2017_2018)}")
 
 
-def save_expected_points_2017_2018(csv_matches='all_matches_2017_2018.csv', output_file='expected_points_2017_2018.csv'):
+def save_expected_points_2017_2018(csv_matches='output/all_matches_2017_2018.csv', output_file='output/expected_points_2017_2018.csv'):
     """Calculează punctele așteptate pentru fiecare echipă"""
     df = pd.read_csv(csv_matches)
     

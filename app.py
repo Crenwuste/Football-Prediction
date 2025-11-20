@@ -10,9 +10,9 @@ predictor = MatchPredictor()
 
 # Încarcă meta-datele despre echipe și sezoane
 def load_metadata():
-    stats = pd.read_csv('stats.csv')
-    results = pd.read_csv('results.csv')
-    current_season_teams = pd.read_csv('expected_points_2017_2018.csv')
+    stats = pd.read_csv('databases/stats.csv')
+    results = pd.read_csv('databases/results.csv')
+    current_season_teams = pd.read_csv('output/expected_points_2017_2018.csv')
     teams = sorted(current_season_teams['team'].dropna().unique())
     seasons = sorted(results['season'].dropna().astype(str).unique())
     return teams, seasons
@@ -20,7 +20,7 @@ def load_metadata():
 # Încarcă expected points
 def load_expected_points():
     try:
-        expected_points = pd.read_csv('expected_points_2017_2018.csv')
+        expected_points = pd.read_csv('output/expected_points_2017_2018.csv')
         return expected_points
     except FileNotFoundError:
         print("Fișierul expected_points_2017_2018.csv nu a fost găsit.")
@@ -140,4 +140,4 @@ def index():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5001, debug=True)
