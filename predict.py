@@ -121,7 +121,6 @@ class MatchPredictor:
         
         # Reordoneaza coloanele pentru a corespunde cu antrenarea
         features_df = features_df[self.feature_columns]
-        
         return features_df
     
     def predict(self, home_team, away_team, season='2017-2018'):
